@@ -1,4 +1,5 @@
 import time
+import os
 import json
 import logging
 from pathlib import Path
@@ -113,15 +114,15 @@ async def log_usage(request: Request, response_data: Dict[Any, Any] = None, erro
 
 def get_provider(model: str) -> tuple[str, str]:
     if model in GROQ_MODELS:
-        return GROQ_API_BASE, "gsk_4hn3tOrdzjHP0kMbIxTyWGdyb3" + "FY3MEKWjYNopKPOozKArMDN4ee"
+        return GROQ_API_BASE, os.getenv("GROQ_API_KEY", "")
     if model in GEMINI_MODELS:
-        return GEMINI_API_BASE, "AQ.Ab8RN6IDBkOfscrpmKfoDaj" + "qM6SLvZO73wW3eFsB4IO3vHDLMg"
+        return GEMINI_API_BASE, os.getenv("GEMINI_API_KEY", "")
     if model in TOGETHER_MODELS:
-        return TOGETHER_API_BASE, "NEED_TOGETHER_KEY"
+        return TOGETHER_API_BASE, os.getenv("TOGETHER_API_KEY", "")
     if model in MISTRAL_MODELS:
-        return MISTRAL_API_BASE, "6B51ZcAT6ocuLbujzwtzAJ9mo4b4iECo"
+        return MISTRAL_API_BASE, os.getenv("MISTRAL_API_KEY", "")
     if model in NVIDIA_MODELS:
-        return NVIDIA_API_BASE, "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"
+        return NVIDIA_API_BASE, os.getenv("NVIDIA_API_KEY", "")
     raise HTTPException(status_code=400, detail=f"Unknown model: {model}")
 
 FRONTEND_HTML: str | None = None
