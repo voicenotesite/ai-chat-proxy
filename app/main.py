@@ -22,8 +22,6 @@ RATE_LIMIT_WINDOW = 60
 RATE_LIMIT_MAX_REQUESTS = 60
 
 GROQ_API_BASE = "https://api.groq.com/openai/v1"
-GEMINI_API_BASE = "https://generativelanguage.googleapis.com/v1beta/openai"
-TOGETHER_API_BASE = "https://api.together.xyz/v1"
 MISTRAL_API_BASE = "https://api.mistral.ai/v1"
 NVIDIA_API_BASE = "https://integrate.api.nvidia.com/v1"
 
@@ -31,17 +29,6 @@ GROQ_MODELS = [
     "llama-3.3-70b-versatile", "llama-3.1-8b-instant",
     "mixtral-8x7b-32768", "gemma2-9b-it",
     "deepseek-r1-distill-llama-70b",
-]
-
-GEMINI_MODELS = [
-    "gemini-2.0-flash", "gemini-2.0-flash-lite",
-    "gemini-1.5-flash", "gemini-1.5-pro",
-]
-
-TOGETHER_MODELS = [
-    "meta-llama/Meta-Llama-3.1-8B-Instruct-Turbo",
-    "mistralai/Mistral-7B-Instruct-v0.3",
-    "microsoft/Phi-3.5-mini-instruct",
 ]
 
 MISTRAL_MODELS = [
@@ -115,10 +102,6 @@ async def log_usage(request: Request, response_data: Dict[Any, Any] = None, erro
 def get_provider(model: str) -> tuple[str, str]:
     if model in GROQ_MODELS:
         return GROQ_API_BASE, os.getenv("GROQ_API_KEY", "")
-    if model in GEMINI_MODELS:
-        return GEMINI_API_BASE, os.getenv("GEMINI_API_KEY", "")
-    if model in TOGETHER_MODELS:
-        return TOGETHER_API_BASE, os.getenv("TOGETHER_API_KEY", "")
     if model in MISTRAL_MODELS:
         return MISTRAL_API_BASE, os.getenv("MISTRAL_API_KEY", "")
     if model in NVIDIA_MODELS:
@@ -140,8 +123,8 @@ async def serve_frontend():
 async def health():
     return {
         "status": "ok",
-        "providers": ["groq", "gemini", "together", "mistral", "nvidia"],
-        "models": len(GROQ_MODELS) + len(GEMINI_MODELS) + len(TOGETHER_MODELS) + len(MISTRAL_MODELS) + len(NVIDIA_MODELS),
+        "providers": ["groq", "mistral", "nvidia"],
+        "models": len(GROQ_MODELS) + len(MISTRAL_MODELS) + len(NVIDIA_MODELS),
     }
 
 @app.api_route("/v1/chat/completions", methods=["GET", "POST"])
